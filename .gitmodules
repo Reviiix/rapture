@@ -1,0 +1,3 @@
+[submodule "Assets/Scripts/pure-unity-methods"]
+	path = Assets/Scripts/pure-unity-methods
+	url = https://github.com/Reviiix/pure-unity-methods.git
