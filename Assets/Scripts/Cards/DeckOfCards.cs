@@ -1,8 +1,9 @@
 ﻿using System;
+using PureFunctions.UnitySpecific;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class DeckOfCards : MonoBehaviour
+public class DeckOfCards : Singleton<DeckOfCards>
     {
         [SerializeField] private bool allowDuplicateCards;
         [SerializeField] private Card[] cards;

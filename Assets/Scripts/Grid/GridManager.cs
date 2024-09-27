@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using PureFunctions.UnitySpecific;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [ExecuteInEditMode]
-public class GridManager : MonoBehaviour
+public class GridManager : Singleton<GridManager>
 {
     [SerializeField] private Transform grid;[SerializeField] [Range(1, 10)] public int amountOfRows;
     [SerializeField] [Range(1, 10)] public int amountOfCardsPerRow;
