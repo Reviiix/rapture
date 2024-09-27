@@ -8,74 +8,101 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class GridManager : Singleton<GridManager>
 {
-    [SerializeField] private Transform grid;[SerializeField] [Range(1, 10)] public int amountOfRows;
-    [SerializeField] [Range(1, 10)] public int amountOfCardsPerRow;
+    [SerializeField] private Transform gridArea;
+    [SerializeField] private GameObject gridPrefab;
     [SerializeField] private GameObject rowPrefab;
     [SerializeField] private GameObject cardPrefab;
-    private List<GameObject> rows = new List<GameObject>();
-    private List<GridItem> cards = new List<GridItem>();
-    private Action<GridItem> OnCardClick;
+    [SerializeField] [Range(2, 7)] public int amountOfRows;
+    [SerializeField] [Range(2, 10)] public int amountOfCardsPerRow;
+    private readonly List<GridItem> cards = new ();
+    private GameObject grid;
+    public Action<GridItem> OnCardClick;
 
-    private void Awake()
+    private IEnumerator Start()
     {
-        ResetGrid(CreateGrid);
-    }
-
-    private void Start()
-    {
+        yield return new WaitUntil(() => DeckOfCards.Instance != null);
+        yield return new WaitUntil(() => !active);
         SetCardSlotValues();
+        grid = GameObject.FindWithTag("Grid");
     }
 
+    public bool active = false;
+    #if UNITY_EDITOR
     private void OnValidate()
     {
-        ResetGrid(CreateGrid);
+        //return;
+        if (Application.isPlaying)
+        {
+            return;
+        }
+        if (active) return;
+        active = true;
+        ResetGrid(()=>CreateGrid(() =>
+        {
+            active = false;
+        }));
     }
-    
-    private void CreateGrid()
+    #endif
+
+    private void CreateGrid(Action completeCallback = null)
     {
+        grid = Instantiate(gridPrefab, gridArea);
         for (var i = 0; i < amountOfRows; i++)
         {
-            rows.Add(Instantiate(rowPrefab, grid));
+            var row = Instantiate(rowPrefab, grid.transform);
             for (var j = 0; j < amountOfCardsPerRow; j++)
             {
-                var card = Instantiate(cardPrefab, rows[i].transform).GetComponent<GridItem>();
-                cards.Add(card);
-                card.Initialise(OnGridItemClick);
+                if (Application.isPlaying)
+                {
+                    var card = Instantiate(cardPrefab, row.transform).GetComponent<GridItem>();
+                    cards.Add(card);
+                    card.Initialise(OnGridItemClick);
+                }
+                else
+                {
+                    Instantiate(cardPrefab, row.transform);
+                }
             }
         }
-
-        if (IsOdd(cards.Count))
+        if (!MathUtilities.IsEvenNumber(cards.Count))
         {
             Debug.LogWarning($"Having an Odd amount of {nameof(cards)} means not every card has a match!");
         }
+        completeCallback?.Invoke();
     }
 
-    private void ResetGrid( Action completeCallback)
+    private void ResetGrid(Action completeCallback = null)
     {
         cards.Clear();
-        UnityEditor.EditorApplication.delayCall+=()=>
+        grid = GameObject.FindWithTag("Grid");
+        if (!grid)
         {
-            foreach (var row in rows)
+            completeCallback?.Invoke();
+            return;
+        }
+        if (Application.isPlaying)
+        {
+            Destroy(grid);
+            completeCallback?.Invoke();
+        }
+        else
+        {
+            UnityEditor.EditorApplication.delayCall+=()=>
             {
-                DestroyImmediate(row);
-            }
-            rows.Clear();
-            completeCallback();
-        };
+                DestroyImmediate(grid);
+                completeCallback?.Invoke();
+            };
+        }
     }
 
-    private static bool IsOdd(int i)
+    [ContextMenu(nameof(SetCardSlotValues))]
+    public void SetCardSlotValues()
     {
-        return false;
-    }
-
-    private void SetCardSlotValues()
-    {
-        var cssards = CreateCardList(cards.Count);
+        var cardValues = CreateCardList(cards.Count);
         var index = 0;
         foreach (var card in cards)
         {
-            card.SetValue(cssards[index]);
+            card.SetValue(cardValues[index]);
             index++;
         }
     }
@@ -84,24 +111,24 @@ public class GridManager : Singleton<GridManager>
     /// Create two matching arrays of cards and combine them together.
     /// This ensures there are always the correct amount of matches
     /// </summary>
-    private static List<CardValue> CreateCardList(int amount)
+    private static List<Card> CreateCardList(int amount)
     {
-        var firstHalf = new List<CardValue>();
+        var firstHalf = new List<Card>();
         var half = amount / 2;
         for (var i = 0; i < half; i++)
         {
             firstHalf.Add(GetUniqueValue());
         }
-        var secondHalf = new List<CardValue>(firstHalf);
+        var secondHalf = new List<Card>(firstHalf);
         var fullList = firstHalf.Concat(secondHalf).ToList();
         //TODO: Shuffle fullList
         return fullList;
     }
     
     
-    private static CardValue GetUniqueValue()
+    private static Card GetUniqueValue()
     {
-        return Deck.Instance.GetUniquCard();
+        return DeckOfCards.Instance.TakeRandomCard();
     }
 
     private void OnGridItemClick(GridItem gridItem)
