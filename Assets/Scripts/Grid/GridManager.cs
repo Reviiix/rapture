@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using PureFunctions.UnitySpecific;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [ExecuteInEditMode]
 public class GridManager : Singleton<GridManager>
@@ -21,7 +20,7 @@ public class GridManager : Singleton<GridManager>
     private GameObject grid;
     public static Action<GridItem> OnCardClick;
 
-    private IEnumerator Start()
+    public IEnumerator Initialise(Action completeCallback)
     {
         yield return new WaitUntil(() => !generatingGrid);
         yield return new WaitUntil(() => DeckOfCards.Instance != null);
@@ -31,6 +30,7 @@ public class GridManager : Singleton<GridManager>
             SetGridItemValues();
             grid = GameObject.FindWithTag(GridTag);
             generatingGrid = false;
+            completeCallback?.Invoke();
         }));
     }
     
@@ -149,8 +149,8 @@ public class GridManager : Singleton<GridManager>
 
     private static void OnGridItemClick(GridItem gridItem)
     {
-        OnCardClick?.Invoke(gridItem);
         Debug.Log($"{gridItem.Value.GetRank()} of {gridItem.Value.GetSuit()} revealed({gridItem.Revealed})"); //Debug tool
+        OnCardClick?.Invoke(gridItem);
     }
 }
 
