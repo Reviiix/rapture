@@ -6,22 +6,22 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class GridItem : MonoBehaviour
 {
+    private bool Initialised { get; set; }
     public bool Revealed { get; private set; }
     private Image display;
     private Action<GridItem> onClick;
-    private bool initialised;
     public Card Value { get; private set; }
 
     public void Initialise(Action<GridItem> gridManagerOnClick)
     {
-        if (initialised)
+        if (Initialised)
         {
             Debug.LogError($"Do not initialise {nameof(GridItem)} more than once.");
             return;
         }
         AssignFields();
         SubscribeToEvents(gridManagerOnClick);
-        initialised = true;
+        Initialised = true;
     }
 
     private void AssignFields()
@@ -45,7 +45,7 @@ public class GridItem : MonoBehaviour
 
     public void SetValue(Card value)
     {
-        if (!initialised)
+        if (!Initialised)
         {
             Debug.LogError($"{nameof(GridItem)} has not been initialised.");
         }
@@ -59,10 +59,12 @@ public class GridItem : MonoBehaviour
         if (Revealed)
         {
             Reveal();
+            AudioManager.Instance.PlaySuccess();
         }
         else
         {
             Hide();
+            AudioManager.Instance.PlayFailure();
         }
         onClick(this);
     }
