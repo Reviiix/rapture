@@ -7,7 +7,6 @@ public class DeckOfCards : Singleton<DeckOfCards>
     {
         [SerializeField] private bool allowDuplicateCards;
         [SerializeField] private Card[] cards;
-        public int AmountOfCards => cards.Length;
         public Sprite cardBack;
 
         private void Awake()
@@ -43,10 +42,5 @@ public class DeckOfCards : Singleton<DeckOfCards>
         {
             if (!cards[card].InPlay && !allowDuplicateCards) throw new Exception($"Cheat attempt or critical error. Attempting to return duplicate card to deck and deck type does not support this. (card index: {card})");
             cards[card].MarkInActive();
-        }
-
-        public Card TakeSpecificCard(int index)
-        {
-            return cards[index];
         }
     }

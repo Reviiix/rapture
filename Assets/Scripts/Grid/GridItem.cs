@@ -6,10 +6,10 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class GridItem : MonoBehaviour
 {
+    public bool Revealed { get; private set; }
     private Image display;
     private Action<GridItem> onClick;
     private bool initialised;
-    private bool revealed;
     public Card Value { get; private set; }
 
     public void Initialise(Action<GridItem> gridManagerOnClick)
@@ -34,6 +34,14 @@ public class GridItem : MonoBehaviour
     {
         onClick += gridManagerOnClick;
     }
+    
+    private void OnDisable()
+    {
+        if (onClick != null)
+        {
+            onClick -= GridManager.OnCardClick;
+        }
+    }
 
     public void SetValue(Card value)
     {
@@ -42,18 +50,37 @@ public class GridItem : MonoBehaviour
             Debug.LogError($"{nameof(GridItem)} has not been initialised.");
         }
         Value = value;
+        //display.sprite = value.GetCardSprite(); //Debug tool
     }
 
     private void OnClick()
     {
-        if (revealed) return;
-        revealed = true;
+        Revealed = !Revealed;
+        if (Revealed)
+        {
+            Reveal();
+        }
+        else
+        {
+            Hide();
+        }
         onClick(this);
+    }
+
+    private void Reveal()
+    {
+        var v = Value.GetCardSprite();
+        display.sprite = v;
+    }
+
+    private void Hide()
+    {
+        display.sprite = DeckOfCards.Instance.cardBack;
     }
 
     public void ResetCard()
     {
-        revealed = false;
+        Revealed = false;
         display.sprite = DeckOfCards.Instance.cardBack;
     }
 }

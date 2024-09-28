@@ -4,42 +4,49 @@ using System.Collections.Generic;
 using System.Linq;
 using PureFunctions.UnitySpecific;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [ExecuteInEditMode]
 public class GridManager : Singleton<GridManager>
 {
+    private bool generatingGrid;
+    private const string GridTag = "Grid";
     [SerializeField] private Transform gridArea;
     [SerializeField] private GameObject gridPrefab;
     [SerializeField] private GameObject rowPrefab;
     [SerializeField] private GameObject cardPrefab;
     [SerializeField] [Range(2, 7)] public int amountOfRows;
-    [SerializeField] [Range(2, 10)] public int amountOfCardsPerRow;
-    private readonly List<GridItem> cards = new ();
+    [SerializeField] [Range(2, 10)] public int amountOfItemsPerRow;
+    private readonly List<GridItem> gridItems = new ();
     private GameObject grid;
-    public Action<GridItem> OnCardClick;
+    public static Action<GridItem> OnCardClick;
 
     private IEnumerator Start()
     {
+        yield return new WaitUntil(() => !generatingGrid);
         yield return new WaitUntil(() => DeckOfCards.Instance != null);
-        yield return new WaitUntil(() => !active);
-        SetCardSlotValues();
-        grid = GameObject.FindWithTag("Grid");
+        generatingGrid = true;
+        ResetGrid(()=>CreateGrid(() =>
+        {
+            SetGridItemValues();
+            grid = GameObject.FindWithTag(GridTag);
+            generatingGrid = false;
+        }));
     }
-
-    public bool active = false;
+    
     #if UNITY_EDITOR
     private void OnValidate()
     {
-        //return;
+        //generatingGrid = false; //debug tool
         if (Application.isPlaying)
         {
             return;
         }
-        if (active) return;
-        active = true;
+        if (generatingGrid) return;
+        generatingGrid = true;
         ResetGrid(()=>CreateGrid(() =>
         {
-            active = false;
+            generatingGrid = false;
         }));
     }
     #endif
@@ -50,12 +57,12 @@ public class GridManager : Singleton<GridManager>
         for (var i = 0; i < amountOfRows; i++)
         {
             var row = Instantiate(rowPrefab, grid.transform);
-            for (var j = 0; j < amountOfCardsPerRow; j++)
+            for (var j = 0; j < amountOfItemsPerRow; j++)
             {
                 if (Application.isPlaying)
                 {
                     var card = Instantiate(cardPrefab, row.transform).GetComponent<GridItem>();
-                    cards.Add(card);
+                    gridItems.Add(card);
                     card.Initialise(OnGridItemClick);
                 }
                 else
@@ -64,17 +71,17 @@ public class GridManager : Singleton<GridManager>
                 }
             }
         }
-        if (!MathUtilities.IsEvenNumber(cards.Count))
+        if (!MathUtilities.IsEvenNumber(gridItems.Count))
         {
-            Debug.LogWarning($"Having an Odd amount of {nameof(cards)} means not every card has a match!");
+            Debug.LogWarning($"Having an Odd amount of {nameof(gridItems)} means not every card has a match!");
         }
         completeCallback?.Invoke();
     }
 
     private void ResetGrid(Action completeCallback = null)
     {
-        cards.Clear();
-        grid = GameObject.FindWithTag("Grid");
+        ResetGridItems();
+        grid = GameObject.FindWithTag(GridTag);
         if (!grid)
         {
             completeCallback?.Invoke();
@@ -94,13 +101,22 @@ public class GridManager : Singleton<GridManager>
             };
         }
     }
-
-    [ContextMenu(nameof(SetCardSlotValues))]
-    public void SetCardSlotValues()
+    
+    private void ResetGridItems()
     {
-        var cardValues = CreateCardList(cards.Count);
+        foreach (var item in gridItems)
+        {
+            item.ResetCard();
+        }
+        gridItems.Clear();
+    }
+
+    [ContextMenu(nameof(SetGridItemValues))]
+    public void SetGridItemValues()
+    {
+        var cardValues = CreateCardList(gridItems.Count);
         var index = 0;
-        foreach (var card in cards)
+        foreach (var card in gridItems)
         {
             card.SetValue(cardValues[index]);
             index++;
@@ -131,17 +147,10 @@ public class GridManager : Singleton<GridManager>
         return DeckOfCards.Instance.TakeRandomCard();
     }
 
-    private void OnGridItemClick(GridItem gridItem)
+    private static void OnGridItemClick(GridItem gridItem)
     {
         OnCardClick?.Invoke(gridItem);
-    }
-
-    private void ResetCards()
-    {
-        foreach (var card in cards)
-        {
-            card.ResetCard();
-        }
+        Debug.Log($"{gridItem.Value.GetRank()} of {gridItem.Value.GetSuit()} revealed({gridItem.Revealed})"); //Debug tool
     }
 }
 
