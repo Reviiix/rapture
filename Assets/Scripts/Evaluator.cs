@@ -1,10 +1,17 @@
 using PureFunctions.UnitySpecific;
-using UnityEngine;
 
 public class Evaluator : Singleton<Evaluator>
 {
+    private int matches;
+    private int totalMatches;
     private Card selectionOne;
     private Card selectionTwo;
+
+    public void Initialise()
+    {
+        matches = 0;
+        totalMatches = GridManager.Instance.GetTotalItems() / 2;
+    }
 
     protected override void OnEnable()
     {
@@ -20,7 +27,17 @@ public class Evaluator : Singleton<Evaluator>
 
     public bool IsMatch()
     {
-        return selectionOne.DeckIndex == selectionTwo.DeckIndex;
+        var isMatch = selectionOne.DeckIndex == selectionTwo.DeckIndex;
+        if (isMatch)
+        {
+            matches++;
+        }
+        return isMatch;
+    }
+
+    public bool IsWon()
+    {
+        return matches == totalMatches;
     }
 
     private void OnStateEnter(GridItem item)

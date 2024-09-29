@@ -1,5 +1,4 @@
-﻿using System;
-using PureFunctions.UnitySpecific;
+﻿using PureFunctions.UnitySpecific;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -31,16 +30,5 @@ public class DeckOfCards : Singleton<DeckOfCards>
             
             return cards[cardIndex];
         }
-    }
-
-    public void ReturnCardToDeck(Card card)
-    {
-        ReturnCardToDeck(card.DeckIndex);
-    }
-    
-    public void ReturnCardToDeck(int card)
-    {
-        if (!cards[card].InPlay && !allowDuplicateCards) throw new Exception($"Cheat attempt or critical error. Attempting to return duplicate card to deck and deck type does not support this. (card index: {card})");
-        cards[card].MarkInActive();
     }
 }
