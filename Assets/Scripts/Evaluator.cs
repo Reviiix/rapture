@@ -1,4 +1,6 @@
-using PureFunctions.UnitySpecific;
+using Cards;
+using Grid;
+using pure_unity_methods;
 
 public class Evaluator : Singleton<Evaluator>
 {
@@ -42,11 +44,11 @@ public class Evaluator : Singleton<Evaluator>
 
     private void OnStateEnter(GridItem item)
     {
-        if (StateManager.Instance.IsPickOne())
+        if (StateManager.StateManager.Instance.IsPickOne())
         {
             selectionOne = item.Value;
         }
-        if (StateManager.Instance.IsPickTwo())
+        if (StateManager.StateManager.Instance.IsPickTwo())
         {
             selectionTwo = item.Value;
         }

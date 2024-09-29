@@ -1,13 +1,16 @@
 using UnityEngine;
 
-public class GridRow : MonoBehaviour
+namespace Grid
 {
-    public void ShuffleChildren()
+    public class GridRow : MonoBehaviour
     {
-        var totalChildren = transform.childCount;
-        for (var i = 0; i < totalChildren; i++)
+        public void ShuffleChildren()
         {
-            transform.GetChild(i).SetSiblingIndex(Random.Range(0,totalChildren));
+            var totalChildren = transform.childCount;
+            for (var i = 0; i < totalChildren; i++)
+            {
+                transform.GetChild(i).SetSiblingIndex(Random.Range(0,totalChildren));
+            }
         }
     }
 }

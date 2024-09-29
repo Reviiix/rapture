@@ -1,6 +1,9 @@
 using System;
 
-public interface IState
+namespace StateManager.States.Base
 {
-    public void OnStateEnter(Action callBack);
+    public interface IState
+    {
+        public void OnStateEnter(Action callBack);
+    }
 }

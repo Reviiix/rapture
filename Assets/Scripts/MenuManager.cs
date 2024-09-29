@@ -1,4 +1,4 @@
-using PureFunctions.UnitySpecific;
+using pure_unity_methods;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -19,8 +19,8 @@ public class MenuManager : Singleton<MenuManager>
 
     public void OpenMenu()
     {
-        var currentState = StateManager.Instance.IsMenuState();
-        StateManager.Instance.SetMenuState(!currentState, () =>
+        var currentState = StateManager.StateManager.Instance.IsMenuState();
+        StateManager.StateManager.Instance.SetMenuState(!currentState, () =>
         {
             menu.enabled = !currentState;
         });
@@ -30,7 +30,7 @@ public class MenuManager : Singleton<MenuManager>
     {
         if (Evaluator.Instance.IsWon())
         {
-            StateManager.Instance.RestartGame();
+            StateManager.StateManager.Instance.RestartGame();
         }
         else
         {
@@ -40,6 +40,6 @@ public class MenuManager : Singleton<MenuManager>
 
     private void RestartPressed()
     {
-        StateManager.Instance.RestartGame();
+        StateManager.StateManager.Instance.RestartGame();
     }
 }

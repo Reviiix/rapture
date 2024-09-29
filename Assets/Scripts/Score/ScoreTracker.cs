@@ -1,85 +1,89 @@
 using System;
-using PureFunctions.UnitySpecific;
+using pure_unity_methods;
+using StateManager.States;
 
-public class ScoreTracker : Singleton<ScoreTracker>
+namespace Score
 {
-    public static Action<ScoreInformation> OnScoreUpdate;
-    private ScoreInformation score = new();
-    private int comboTracker;
-
-    public void Initialise()
+    public class ScoreTracker : Singleton<ScoreTracker>
     {
-        score = new ScoreInformation();
-        OnScoreUpdate?.Invoke(score);
-    }
+        public static Action<ScoreInformation> OnScoreUpdate;
+        private ScoreInformation score = new();
+        private int comboTracker;
 
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-        Evaluation.OnEvaluationComplete += OnEvaluationComplete;
-    }
-
-    protected override void OnDisable()
-    {
-        base.OnDisable();
-        Evaluation.OnEvaluationComplete -= OnEvaluationComplete;
-    }
-
-    private void OnEvaluationComplete(bool match)
-    {
-        AddTurns(1);
-        AddMatches(match ? 1 : 0);
-        CheckCombo(match);
-
-        if (Evaluator.Instance.IsWon())
+        public void Initialise()
         {
-            StateManager.Instance.GameWon();
+            score = new ScoreInformation();
+            OnScoreUpdate?.Invoke(score);
         }
-    }
 
-    private void CheckCombo(bool match)
-    {
-        if (match)
+        protected override void OnEnable()
         {
-            comboTracker++;
-            if (IsValidCombo(comboTracker))
+            base.OnEnable();
+            Evaluation.OnEvaluationComplete += OnEvaluationComplete;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            Evaluation.OnEvaluationComplete -= OnEvaluationComplete;
+        }
+
+        private void OnEvaluationComplete(bool match)
+        {
+            AddTurns(1);
+            AddMatches(match ? 1 : 0);
+            CheckCombo(match);
+
+            if (Evaluator.Instance.IsWon())
             {
-                AddCombo(1);
+                StateManager.StateManager.Instance.GameWon();
             }
         }
-        else
+
+        private void CheckCombo(bool match)
         {
-            comboTracker = 0;
+            if (match)
+            {
+                comboTracker++;
+                if (IsValidCombo(comboTracker))
+                {
+                    AddCombo(1);
+                }
+            }
+            else
+            {
+                comboTracker = 0;
+            }
+        }
+
+        private void AddCombo(int combo)
+        {
+            score.Combo += combo;
+            OnScoreUpdate?.Invoke(score);
+        }
+
+        private void AddMatches(int matches)
+        {
+            score.Matches += matches;
+            OnScoreUpdate?.Invoke(score);
+        }
+    
+        private void AddTurns(int turns)
+        {
+            score.Turns += turns;
+            OnScoreUpdate?.Invoke(score);
+        }
+        private static  bool IsValidCombo(int combo)
+        {
+            return combo >= 2;
         }
     }
 
-    private void AddCombo(int combo)
+    public class ScoreInformation
     {
-        score.Combo += combo;
-        OnScoreUpdate?.Invoke(score);
+        public int Combo;
+        public int Matches;
+        public int Turns;
+        public int Score => Matches * 10 * (Combo+1);
     }
-
-    private void AddMatches(int matches)
-    {
-        score.Matches += matches;
-        OnScoreUpdate?.Invoke(score);
-    }
-    
-    private void AddTurns(int turns)
-    {
-        score.Turns += turns;
-        OnScoreUpdate?.Invoke(score);
-    }
-    private static  bool IsValidCombo(int combo)
-    {
-        return combo >= 2;
-    }
-}
-
-public class ScoreInformation
-{
-    public int Combo;
-    public int Matches;
-    public int Turns;
-    public int Score => Matches * 10 * (Combo+1);
 }

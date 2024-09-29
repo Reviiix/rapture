@@ -1,4 +1,7 @@
-using PureFunctions.UnitySpecific;
+using Cards;
+using Grid;
+using pure_unity_methods;
+using Score;
 using UnityEngine;
 
 /// <summary>
@@ -8,7 +11,7 @@ public class ProjectInitializer : Singleton<ProjectInitializer>
 {
     private void Start()
     {
-        StateManager.Instance.Initialise();
+        StateManager.StateManager.Instance.Initialise();
         MenuManager.Instance.Initialise();
         DeckOfCards.Instance.Initialise();
         ScoreTracker.Instance.Initialise();

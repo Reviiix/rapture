@@ -1,11 +1,15 @@
 using System;
+using StateManager.States.Base;
 using UnityEngine;
 
-public class Menu : State
+namespace StateManager.States
 {
-    public override void OnStateEnter(Action callBack)
+    public class Menu : State
     {
-        Debug.Log($"Entering {nameof(Menu)} state.");
-        callBack();
+        public override void OnStateEnter(Action callBack)
+        {
+            Debug.Log($"Entering {nameof(Menu)} state.");
+            callBack();
+        }
     }
 }

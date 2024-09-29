@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using PureFunctions.UnitySpecific;
+using pure_unity_methods;
 using UnityEngine;
 using UnityEngine.UI;
 

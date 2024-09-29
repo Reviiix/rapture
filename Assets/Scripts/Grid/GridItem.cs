@@ -1,105 +1,108 @@
 using System;
 using System.Collections;
+using Cards;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Image))]
-[RequireComponent(typeof(Button))]
-[RequireComponent(typeof(Animator))]
-
-public class GridItem : MonoBehaviour
+namespace Grid
 {
-    private bool Initialised { get; set; }
-    private bool Active { get; set; }
-    private bool Revealed { get; set; }
-    private Image display;
-    private Animator animator;
-    private Action<GridItem> onClick;
-    public Card Value { get; private set; }
-    private static readonly WaitForSeconds TimeBeforeReset = new (1);
-
-    public void Initialise(Action<GridItem> gridManagerOnClick)
+    [RequireComponent(typeof(Image))]
+    [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(Animator))]
+    public class GridItem : MonoBehaviour
     {
-        if (Initialised)
+        private bool Initialised { get; set; }
+        private bool Active { get; set; }
+        private bool Revealed { get; set; }
+        private Image display;
+        private Animator animator;
+        private Action<GridItem> onClick;
+        public Card Value { get; private set; }
+        private static readonly WaitForSeconds TimeBeforeReset = new (1);
+
+        public void Initialise(Action<GridItem> gridManagerOnClick)
         {
-            Debug.LogError($"Do not initialise {nameof(GridItem)} more than once.");
-            return;
+            if (Initialised)
+            {
+                Debug.LogError($"Do not initialise {nameof(GridItem)} more than once.");
+                return;
+            }
+            AssignFields();
+            SubscribeToEvents(gridManagerOnClick);
+            Initialised = true;
+            Active = true;
         }
-        AssignFields();
-        SubscribeToEvents(gridManagerOnClick);
-        Initialised = true;
-        Active = true;
-    }
 
-    private void AssignFields()
-    {
-        GetComponent<Button>().onClick.AddListener(OnClick); //Secured by the require component attribute.
-        display = GetComponent<Image>();
-        animator = GetComponent<Animator>();
-    }
+        private void AssignFields()
+        {
+            GetComponent<Button>().onClick.AddListener(OnClick); //Secured by the require component attribute.
+            display = GetComponent<Image>();
+            animator = GetComponent<Animator>();
+        }
     
-    private void SubscribeToEvents(Action<GridItem> gridManagerOnClick)
-    {
-        onClick += gridManagerOnClick;
-    }
+        private void SubscribeToEvents(Action<GridItem> gridManagerOnClick)
+        {
+            onClick += gridManagerOnClick;
+        }
     
-    private void OnDisable()
-    {
-        if (onClick != null)
+        private void OnDisable()
         {
-            onClick -= GridManager.OnItemClick;
+            if (onClick != null)
+            {
+                onClick -= GridManager.OnItemClick;
+            }
         }
-    }
     
-    private void OnClick()
-    {
-        if (Revealed) return;
-        if (!Active) return;
-        Reveal();
-        onClick(this);
-    }
-
-    public void SetValue(Card value)
-    {
-        if (!Initialised)
+        private void OnClick()
         {
-            Debug.LogError($"{nameof(GridItem)} has not been initialised.");
-            return;
+            if (Revealed) return;
+            if (!Active) return;
+            Reveal();
+            onClick(this);
         }
-        Value = value;
-        //SetCardSprite(Value.GetCardSprite()); // Debug tool
-    }
 
-    private void Reveal()
-    {
-        Revealed = !Revealed;
-        SetCardSprite(Value.GetCardSprite());
-    }
-
-    private void SetCardSprite(Sprite s)
-    {
-        display.sprite = s;
-    }
-
-    public IEnumerator RemoveFromPlay(bool instant = true)
-    {
-        Active = false;
-        if (!instant)
+        public void SetValue(Card value)
         {
-            yield return TimeBeforeReset;
+            if (!Initialised)
+            {
+                Debug.LogError($"{nameof(GridItem)} has not been initialised.");
+                return;
+            }
+            Value = value;
+            //SetCardSprite(Value.GetCardSprite()); // Debug tool
         }
-        animator.enabled = true;
-        AudioManager.Instance.PlaySuccess();
-    }
+
+        private void Reveal()
+        {
+            Revealed = !Revealed;
+            SetCardSprite(Value.GetCardSprite());
+        }
+
+        private void SetCardSprite(Sprite s)
+        {
+            display.sprite = s;
+        }
+
+        public IEnumerator RemoveFromPlay(bool instant = true)
+        {
+            Active = false;
+            if (!instant)
+            {
+                yield return TimeBeforeReset;
+            }
+            animator.enabled = true;
+            AudioManager.Instance.PlaySuccess();
+        }
     
-    public IEnumerator ResetCard(bool instant = true)
-    {
-        if (!instant)
+        public IEnumerator ResetCard(bool instant = true)
         {
-            yield return TimeBeforeReset;
+            if (!instant)
+            {
+                yield return TimeBeforeReset;
+            }
+            Revealed = false;
+            Active = true;
+            display.sprite = DeckOfCards.Instance.cardBack;
         }
-        Revealed = false;
-        Active = true;
-        display.sprite = DeckOfCards.Instance.cardBack;
     }
 }

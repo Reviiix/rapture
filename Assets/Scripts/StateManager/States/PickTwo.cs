@@ -1,11 +1,15 @@
 using System;
+using StateManager.States.Base;
 using UnityEngine;
 
-public class PickTwo : State
+namespace StateManager.States
 {
-    public override void OnStateEnter(Action callBack)
+    public class PickTwo : State
     {
-        Debug.Log($"Entering {nameof(PickOne)} state.");
-        callBack();
+        public override void OnStateEnter(Action callBack)
+        {
+            Debug.Log($"Entering {nameof(PickOne)} state.");
+            callBack();
+        }
     }
 }

@@ -1,89 +1,94 @@
 using System;
 using System.Collections.Generic;
-using PureFunctions.UnitySpecific;
+using pure_unity_methods;
+using StateManager.States;
+using StateManager.States.Base;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class StateManager : Singleton<StateManager>
+namespace StateManager
 {
-    [SerializeField] private State[] states;
-    [SerializeField] private State menuState; //menuState can appear out of order
-    private readonly Queue<State> stateQueue = new ();
-    private State activeState;
-    private State stateCache;
-    public static Action<State> OnStateChange;
-
-    public void Initialise()
+    public class StateManager : Singleton<StateManager>
     {
-        ConvertArrayToQueue();
-        ProgressState();
-    }
+        [SerializeField] private State[] states;
+        [SerializeField] private State menuState; //menuState can appear out of order
+        private readonly Queue<State> stateQueue = new ();
+        private State activeState;
+        private State stateCache;
+        public static Action<State> OnStateChange;
 
-    private void ConvertArrayToQueue()
-    {
-        foreach (var state in states)
+        public void Initialise()
         {
-            stateQueue.Enqueue(state);
+            ConvertArrayToQueue();
+            ProgressState();
         }
-    }
-    
-    public void ProgressState()
-    {
-        activeState = stateQueue.Dequeue();
-        stateQueue.Enqueue(activeState);
-        activeState.OnStateEnter(()=>
+
+        private void ConvertArrayToQueue()
         {
-            if (activeState.progressImmediately)
+            foreach (var state in states)
             {
-                ProgressState();
+                stateQueue.Enqueue(state);
             }
-            OnStateChange?.Invoke(activeState);
-        });
-    }
-
-    public void SetMenuState(bool state, Action callBack)
-    {
-        if (state)
-        {
-            stateCache = activeState;
-            activeState = menuState;
-            activeState.OnStateEnter(callBack);
         }
-        else
+    
+        public void ProgressState()
         {
-            activeState = stateCache;
-            activeState.OnStateEnter(callBack);
+            activeState = stateQueue.Dequeue();
+            stateQueue.Enqueue(activeState);
+            activeState.OnStateEnter(()=>
+            {
+                if (activeState.progressImmediately)
+                {
+                    ProgressState();
+                }
+                OnStateChange?.Invoke(activeState);
+            });
         }
-    }
-    
-    public void GameWon()
-    {
-       MenuManager.Instance.OpenMenu();
-       AudioManager.Instance.PlayGameWon();
-    }
 
-    public void RestartGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
+        public void SetMenuState(bool state, Action callBack)
+        {
+            if (state)
+            {
+                stateCache = activeState;
+                activeState = menuState;
+                activeState.OnStateEnter(callBack);
+            }
+            else
+            {
+                activeState = stateCache;
+                activeState.OnStateEnter(callBack);
+            }
+        }
     
-    public bool IsMenuState()
-    {
-        return activeState is Menu;
-    }
+        public void GameWon()
+        {
+            MenuManager.Instance.OpenMenu();
+            AudioManager.Instance.PlayGameWon();
+        }
 
-    public bool IsPickOne()
-    {
-        return activeState is PickOne;
-    }
+        public void RestartGame()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     
-    public bool IsPickTwo()
-    {
-        return activeState is PickTwo;
-    }
+        public bool IsMenuState()
+        {
+            return activeState is Menu;
+        }
+
+        public bool IsPickOne()
+        {
+            return activeState is PickOne;
+        }
     
-    public bool IsEvaluation()
-    {
-        return activeState is Evaluation;
+        public bool IsPickTwo()
+        {
+            return activeState is PickTwo;
+        }
+    
+        public bool IsEvaluation()
+        {
+            return activeState is Evaluation;
+        }
     }
 }

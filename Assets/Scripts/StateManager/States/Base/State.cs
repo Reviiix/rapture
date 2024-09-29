@@ -1,13 +1,16 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public abstract class State : MonoBehaviour, IState
+namespace StateManager.States.Base
 {
-    public bool progressImmediately;
-    
-    public virtual void OnStateEnter(Action callBack)
+    [Serializable]
+    public abstract class State : MonoBehaviour, IState
     {
-        throw new NotImplementedException();
+        public bool progressImmediately;
+    
+        public virtual void OnStateEnter(Action callBack)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
