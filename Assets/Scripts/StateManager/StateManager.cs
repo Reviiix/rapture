@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using PureFunctions.UnitySpecific;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StateManager : Singleton<StateManager>
 {
@@ -53,6 +54,17 @@ public class StateManager : Singleton<StateManager>
             activeState = stateCache;
             activeState.OnStateEnter(callBack);
         }
+    }
+    
+    public void GameWon()
+    {
+       MenuManager.Instance.OpenMenu();
+       AudioManager.Instance.PlayGameWon();
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     
     public bool IsMenuState()
