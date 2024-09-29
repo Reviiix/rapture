@@ -49,7 +49,7 @@ namespace Grid
         {
             if (onClick != null)
             {
-                onClick -= GridManager.OnItemClick;
+                onClick -= Grid.OnItemClick;
             }
         }
     
