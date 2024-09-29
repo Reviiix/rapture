@@ -4,23 +4,24 @@ using System.Collections.Generic;
 using System.Linq;
 using PureFunctions.UnitySpecific;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [ExecuteInEditMode]
 public class GridManager : Singleton<GridManager>
 {
+    public static Action<GridItem> OnItemClick;
     private bool generatingGrid;
     private const string GridTag = "Grid";
     [SerializeField] private Transform gridArea;
     [SerializeField] private GameObject gridPrefab;
     [SerializeField] private GameObject rowPrefab;
     [SerializeField] private GameObject cardPrefab;
-    [SerializeField] [Range(2, 7)] public int amountOfRows;
-    [SerializeField] [Range(2, 10)] public int amountOfItemsPerRow;
+    [SerializeField] [Range(1, 4)] public int amountOfRows = 3; //Setting range to preserve readability of cards.
+    [SerializeField] [Range(2, 8)] public int amountOfItemsPerRow = 6;
     private readonly List<GridItem> gridItems = new ();
     private GameObject grid;
-    public static Action<GridItem> OnItemClick;
-    public GridItem selectionOne;
-    public GridItem selectionTwo;
+    private GridItem selectionOne;
+    private GridItem selectionTwo;
 
     public IEnumerator Initialise(Action completeCallback)
     {
@@ -64,7 +65,7 @@ public class GridManager : Singleton<GridManager>
     }
     
 
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
     private void OnValidate()
     {
         //generatingGrid = false; //debug tool
@@ -86,7 +87,7 @@ public class GridManager : Singleton<GridManager>
         grid = Instantiate(gridPrefab, gridArea);
         for (var i = 0; i < amountOfRows; i++)
         {
-            var row = Instantiate(rowPrefab, grid.transform);
+            var row = Instantiate(rowPrefab, grid.transform).GetComponent<GridRow>();
             for (var j = 0; j < amountOfItemsPerRow; j++)
             {
                 if (Application.isPlaying)
@@ -100,6 +101,7 @@ public class GridManager : Singleton<GridManager>
                     Instantiate(cardPrefab, row.transform);
                 }
             }
+            row.ShuffleChildren();
         }
         if (!MathUtilities.IsEvenNumber(gridItems.Count))
         {
@@ -167,7 +169,20 @@ public class GridManager : Singleton<GridManager>
         }
         var secondHalf = new List<Card>(firstHalf);
         var fullList = firstHalf.Concat(secondHalf).ToList();
-        return fullList;
+        return Shuffle(fullList);
+    }
+    
+    private static List<T> Shuffle<T>(List<T> list)
+    {
+        for (var i = 0; i < list.Count; i++)
+        {
+            var temp = list[i];
+            var randomIndex = Random.Range(i, list.Count);
+            list[i] = list[randomIndex];
+            list[randomIndex] = temp;
+        }
+
+        return list;
     }
     
     
@@ -194,6 +209,11 @@ public class GridManager : Singleton<GridManager>
         {
             selectionTwo = gridItem;
         }
+    }
+
+    public int GetTotalItems()
+    {
+        return gridItems.Count;
     }
 }
 
