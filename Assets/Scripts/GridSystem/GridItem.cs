@@ -4,7 +4,7 @@ using Cards;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Grid
+namespace GridSystem
 {
     [RequireComponent(typeof(Image))]
     [RequireComponent(typeof(Button))]

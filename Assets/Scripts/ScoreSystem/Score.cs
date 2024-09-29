@@ -3,7 +3,7 @@ using pure_unity_methods;
 using StateManagement;
 using StateManagement.States;
 
-namespace Score
+namespace ScoreSystem
 {
     public class Score : Singleton<Score>
     {

@@ -2,7 +2,7 @@ using pure_unity_methods.Effects;
 using TMPro;
 using UnityEngine;
 
-namespace Score
+namespace ScoreSystem
 {
     [RequireComponent(typeof(TMP_Text))]
     public class RollupScoreDisplay : MonoBehaviour

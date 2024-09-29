@@ -1,7 +1,7 @@
 using Cards;
-using Grid;
+using GridSystem;
 using pure_unity_methods;
-using Score;
+using ScoreSystem;
 using StateManagement;
 
 /// <summary>
@@ -14,8 +14,8 @@ public class ProjectInitializer : Singleton<ProjectInitializer>
         StateManager.Instance.Initialise();
         Menu.Instance.Initialise();
         DeckOfCards.Instance.Initialise();
-        Score.Score.Instance.Initialise();
-        StartCoroutine(Grid.Grid.Instance.Initialise(() =>
+        Score.Instance.Initialise();
+        StartCoroutine(Grid.Instance.Initialise(() =>
         {
             //dependent on GridManager
             Audio.Instance.Initialise();
