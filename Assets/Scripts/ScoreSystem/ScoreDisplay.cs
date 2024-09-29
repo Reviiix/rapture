@@ -3,7 +3,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 
-namespace Score
+namespace ScoreSystem
 {
     public class ScoreDisplay : MonoBehaviour
     {

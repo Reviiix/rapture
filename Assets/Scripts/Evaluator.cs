@@ -1,5 +1,5 @@
 using Cards;
-using Grid;
+using GridSystem;
 using pure_unity_methods;
 using StateManagement;
 
@@ -13,19 +13,19 @@ public class Evaluator : Singleton<Evaluator>
     public void Initialise()
     {
         matches = 0;
-        totalMatches = Grid.Grid.Instance.GetTotalItems() / 2;
+        totalMatches = Grid.Instance.GetTotalItems() / 2;
     }
 
     protected override void OnEnable()
     {
         base.OnEnable();
-        Grid.Grid.OnItemClick += OnStateEnter;
+        Grid.OnItemClick += OnStateEnter;
     }
     
     protected override void OnDisable()
     {
         base.OnDisable();
-        Grid.Grid.OnItemClick -= OnStateEnter;
+        Grid.OnItemClick -= OnStateEnter;
     }
 
     public bool IsMatch()

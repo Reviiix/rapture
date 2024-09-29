@@ -9,7 +9,7 @@ using StateManagement.States;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Grid
+namespace GridSystem
 {
     [ExecuteInEditMode]
     public class Grid : Singleton<Grid>
