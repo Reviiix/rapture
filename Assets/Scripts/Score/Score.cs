@@ -5,7 +5,7 @@ using StateManagement.States;
 
 namespace Score
 {
-    public class ScoreTracker : Singleton<ScoreTracker>
+    public class Score : Singleton<Score>
     {
         public static Action<ScoreInformation> OnScoreUpdate;
         private ScoreInformation score = new();

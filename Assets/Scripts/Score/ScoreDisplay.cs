@@ -13,12 +13,12 @@ namespace Score
 
         private void OnEnable()
         {
-            ScoreTracker.OnScoreUpdate += OnScoreUpdate;
+            Score.OnScoreUpdate += OnScoreUpdate;
         }
 
         private void OnDisable()
         {
-            ScoreTracker.OnScoreUpdate -= OnScoreUpdate;
+            Score.OnScoreUpdate -= OnScoreUpdate;
         }
 
         private void OnScoreUpdate(ScoreInformation score)

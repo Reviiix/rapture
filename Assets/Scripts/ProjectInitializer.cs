@@ -14,11 +14,11 @@ public class ProjectInitializer : Singleton<ProjectInitializer>
         StateManager.Instance.Initialise();
         MenuManager.Instance.Initialise();
         DeckOfCards.Instance.Initialise();
-        ScoreTracker.Instance.Initialise();
+        Score.Score.Instance.Initialise();
         StartCoroutine(Grid.Grid.Instance.Initialise(() =>
         {
             //dependent on GridManager
-            AudioManager.Instance.Initialise();
+            Audio.Instance.Initialise();
             Evaluator.Instance.Initialise();
         }));
     }
