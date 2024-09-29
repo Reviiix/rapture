@@ -63,7 +63,7 @@ namespace StateManagement
         public void GameWon()
         {
             MenuManager.Instance.OpenMenu();
-            AudioManager.PlayGameWon();
+            Audio.PlayGameWon();
         }
 
         public void RestartGame()

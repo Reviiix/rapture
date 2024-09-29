@@ -63,7 +63,7 @@ namespace Grid
             }
             else
             {
-                AudioManager.PlayFailure();
+                Audio.PlayFailure();
                 StartCoroutine(selectionOne.ResetCard(false));
                 StartCoroutine(selectionTwo.ResetCard(false));
             }

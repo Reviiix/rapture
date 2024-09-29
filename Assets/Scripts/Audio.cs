@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
-public class AudioManager : Singleton<AudioManager>
+public class Audio : Singleton<Audio>
 {
     private static AudioSource _backGroundAudioSource;
     private static readonly Queue<AudioSource> AudioSources = new ();

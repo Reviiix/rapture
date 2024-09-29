@@ -91,7 +91,7 @@ namespace Grid
                 yield return TimeBeforeReset;
             }
             animator.enabled = true;
-            AudioManager.PlaySuccess();
+            Audio.PlaySuccess();
         }
     
         public IEnumerator ResetCard(bool instant = true)
