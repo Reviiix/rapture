@@ -13,6 +13,7 @@ public struct Card
     public void Initialise(int index)
     {
         DeckIndex = index;
+        InPlay = false;
     }
 
     public Suit GetSuit()
