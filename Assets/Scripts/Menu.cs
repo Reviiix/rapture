@@ -1,11 +1,11 @@
-using PureFunctions.UnitySpecific;
+using pure_unity_methods;
+using StateManagement;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class MenuManager : Singleton<MenuManager>
+public class Menu : Singleton<Menu>
 {
-    [SerializeField] private Canvas menu;
+    [SerializeField] private Canvas display;
     [SerializeField] private Button menuButton;
     [SerializeField] private Button playButton;
     [SerializeField] private Button restartButton;
@@ -19,10 +19,10 @@ public class MenuManager : Singleton<MenuManager>
 
     public void OpenMenu()
     {
-        var currentState = StateManager.Instance.IsMenuState();
-        StateManager.Instance.SetMenuState(!currentState, () =>
+        var isMenuState = StateManager.Instance.IsMenuState();
+        StateManager.Instance.SetMenuState(!isMenuState, () =>
         {
-            menu.enabled = !currentState;
+            display.enabled = !isMenuState;
         });
     }
 
@@ -38,7 +38,7 @@ public class MenuManager : Singleton<MenuManager>
         }
     }
 
-    private void RestartPressed()
+    private static void RestartPressed()
     {
         StateManager.Instance.RestartGame();
     }

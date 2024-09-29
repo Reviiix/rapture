@@ -1,34 +1,33 @@
-﻿using PureFunctions.UnitySpecific;
+﻿using pure_unity_methods;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class DeckOfCards : Singleton<DeckOfCards>
+namespace Cards
 {
-    [SerializeField] private bool allowDuplicateCards;
-    [SerializeField] private Card[] cards;
-    public Sprite cardBack;
-
-    public void Initialise()
+    public class DeckOfCards : Singleton<DeckOfCards>
     {
-        for (var i = 0; i < cards.Length; i++)
+        [SerializeField] private bool allowDuplicateCards;
+        [SerializeField] private Card[] cards;
+        public Sprite cardBack;
+
+        public void Initialise()
         {
-            cards[i].Initialise(i);
+            for (var i = 0; i < cards.Length; i++)
+            {
+                cards[i].Initialise(i);
+            }
         }
-    }
 
-    public Card TakeRandomCard()
-    {
-        while (true)
+        public Card TakeRandomCard()
         {
-            var cardIndex = Random.Range(0, cards.Length);
-            
-            if (allowDuplicateCards) return cards[cardIndex];
-            
-            if (cards[cardIndex].InPlay) continue;
-
-            cards[cardIndex].MarkActive();
-            
-            return cards[cardIndex];
+            while (true)
+            {
+                var cardIndex = Random.Range(0, cards.Length);
+                if (allowDuplicateCards) return cards[cardIndex];
+                if (cards[cardIndex].InPlay) continue;
+                cards[cardIndex].MarkActive();
+                return cards[cardIndex];
+            }
         }
     }
 }

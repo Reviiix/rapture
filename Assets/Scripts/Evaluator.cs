@@ -1,4 +1,7 @@
-using PureFunctions.UnitySpecific;
+using Cards;
+using Grid;
+using pure_unity_methods;
+using StateManagement;
 
 public class Evaluator : Singleton<Evaluator>
 {
@@ -10,19 +13,19 @@ public class Evaluator : Singleton<Evaluator>
     public void Initialise()
     {
         matches = 0;
-        totalMatches = GridManager.Instance.GetTotalItems() / 2;
+        totalMatches = Grid.Grid.Instance.GetTotalItems() / 2;
     }
 
     protected override void OnEnable()
     {
         base.OnEnable();
-        GridManager.OnItemClick += OnStateEnter;
+        Grid.Grid.OnItemClick += OnStateEnter;
     }
     
     protected override void OnDisable()
     {
         base.OnDisable();
-        GridManager.OnItemClick -= OnStateEnter;
+        Grid.Grid.OnItemClick -= OnStateEnter;
     }
 
     public bool IsMatch()
