@@ -67,6 +67,7 @@ public class GridItem : MonoBehaviour
             return;
         }
         Value = value;
+        //SetCardSprite(Value.GetCardSprite()); // Debug tool
     }
 
     private void Reveal()
