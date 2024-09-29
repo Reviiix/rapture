@@ -23,13 +23,9 @@ namespace Cards
             while (true)
             {
                 var cardIndex = Random.Range(0, cards.Length);
-            
                 if (allowDuplicateCards) return cards[cardIndex];
-            
                 if (cards[cardIndex].InPlay) continue;
-
                 cards[cardIndex].MarkActive();
-            
                 return cards[cardIndex];
             }
         }

@@ -35,7 +35,8 @@ namespace Grid
 
         private void AssignFields()
         {
-            GetComponent<Button>().onClick.AddListener(OnClick); //Secured by the require component attribute.
+            //Secured by the require component attribute.
+            GetComponent<Button>().onClick.AddListener(OnClick);
             display = GetComponent<Image>();
             animator = GetComponent<Animator>();
         }

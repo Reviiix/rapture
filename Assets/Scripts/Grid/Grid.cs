@@ -17,16 +17,16 @@ namespace Grid
         public static Action<GridItem> OnItemClick;
         private bool generatingGrid;
         private const string GridTag = "Grid";
+        private readonly List<GridItem> gridItems = new ();
+        private GameObject gridObject;
+        private GridItem selectionOne;
+        private GridItem selectionTwo;
         [SerializeField] private Transform gridArea;
         [SerializeField] private GameObject gridPrefab;
         [SerializeField] private GameObject rowPrefab;
         [SerializeField] private GameObject cardPrefab;
         [SerializeField] [Range(1, 4)] public int amountOfRows = 3; //Setting range to preserve readability of cards.
         [SerializeField] [Range(2, 8)] public int amountOfItemsPerRow = 6;
-        private readonly List<GridItem> gridItems = new ();
-        private GameObject gridObject;
-        private GridItem selectionOne;
-        private GridItem selectionTwo;
 
         public IEnumerator Initialise(Action completeCallback)
         {

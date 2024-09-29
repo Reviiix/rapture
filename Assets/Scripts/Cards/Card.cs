@@ -7,10 +7,10 @@ namespace Cards
     public struct Card
     {
         public int DeckIndex { get; private set; }
+        public bool InPlay { get; private set; }
         [SerializeField] private Suit suit;
         [SerializeField] private Rank rank;
         [SerializeField] private Sprite cardSprite;
-        public bool InPlay { get; private set; }
 
         public void Initialise(int index)
         {

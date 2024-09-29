@@ -19,10 +19,10 @@ public class Menu : Singleton<Menu>
 
     public void OpenMenu()
     {
-        var currentState = StateManager.Instance.IsMenuState();
-        StateManager.Instance.SetMenuState(!currentState, () =>
+        var isMenuState = StateManager.Instance.IsMenuState();
+        StateManager.Instance.SetMenuState(!isMenuState, () =>
         {
-            display.enabled = !currentState;
+            display.enabled = !isMenuState;
         });
     }
 
