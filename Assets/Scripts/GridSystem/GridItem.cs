@@ -50,7 +50,7 @@ namespace GridSystem
         {
             if (onClick != null)
             {
-                onClick -= Grid.OnItemClick;
+                onClick -= GridManager.OnItemClick;
             }
         }
     

@@ -15,7 +15,7 @@ public class ProjectInitializer : Singleton<ProjectInitializer>
         Menu.Instance.Initialise();
         DeckOfCards.Instance.Initialise();
         Score.Instance.Initialise();
-        StartCoroutine(Grid.Instance.Initialise(() =>
+        StartCoroutine(GridManager.Instance.Initialise(() =>
         {
             //dependent on GridManager
             Audio.Instance.Initialise();

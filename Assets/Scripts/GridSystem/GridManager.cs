@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 namespace GridSystem
 {
     [ExecuteInEditMode]
-    public class Grid : Singleton<Grid>
+    public class GridManager : Singleton<GridManager>
     {
         public static Action<GridItem> OnItemClick;
         private bool generatingGrid;

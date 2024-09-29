@@ -13,19 +13,19 @@ public class Evaluator : Singleton<Evaluator>
     public void Initialise()
     {
         matches = 0;
-        totalMatches = Grid.Instance.GetTotalItems() / 2;
+        totalMatches = GridManager.Instance.GetTotalItems() / 2;
     }
 
     protected override void OnEnable()
     {
         base.OnEnable();
-        Grid.OnItemClick += OnStateEnter;
+        GridManager.OnItemClick += OnStateEnter;
     }
     
     protected override void OnDisable()
     {
         base.OnDisable();
-        Grid.OnItemClick -= OnStateEnter;
+        GridManager.OnItemClick -= OnStateEnter;
     }
 
     public bool IsMatch()
