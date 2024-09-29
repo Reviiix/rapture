@@ -33,7 +33,6 @@ namespace Cards
             return cardSprite;
         }
         
-
         public void MarkActive()
         {
             InPlay = true;
@@ -44,7 +43,6 @@ namespace Cards
             InPlay = false;
         }
     }
-    
 
     public enum Suit
     {

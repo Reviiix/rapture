@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Cards;
 using pure_unity_methods;
-using StateManager.States;
+using StateManagement;
+using StateManagement.States;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -62,7 +63,7 @@ namespace Grid
             }
             else
             {
-                AudioManager.Instance.PlayFailure();
+                AudioManager.PlayFailure();
                 StartCoroutine(selectionOne.ResetCard(false));
                 StartCoroutine(selectionTwo.ResetCard(false));
             }
@@ -185,7 +186,6 @@ namespace Grid
                 list[i] = list[randomIndex];
                 list[randomIndex] = temp;
             }
-
             return list;
         }
     
@@ -200,16 +200,16 @@ namespace Grid
             //Debug.Log($"{gridItem.Value.GetRank()} of {gridItem.Value.GetSuit()} revealed({gridItem.Revealed})"); //Debug tool
             SetSelections(gridItem);
             OnItemClick?.Invoke(gridItem);
-            StateManager.StateManager.Instance.ProgressState();
+            StateManager.Instance.ProgressState();
         }
 
         private void SetSelections(GridItem gridItem)
         {
-            if (StateManager.StateManager.Instance.IsPickOne())
+            if (StateManager.Instance.IsPickOne())
             {
                 selectionOne = gridItem;
             }
-            if (StateManager.StateManager.Instance.IsPickTwo())
+            if (StateManager.Instance.IsPickTwo())
             {
                 selectionTwo = gridItem;
             }
