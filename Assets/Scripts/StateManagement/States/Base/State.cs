@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace StateManager.States.Base
+namespace StateManagement.States.Base
 {
     [Serializable]
     public abstract class State : MonoBehaviour, IState

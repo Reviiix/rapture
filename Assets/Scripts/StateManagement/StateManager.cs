@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using pure_unity_methods;
-using StateManager.States;
-using StateManager.States.Base;
+using StateManagement.States;
+using StateManagement.States.Base;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace StateManager
+namespace StateManagement
 {
     public class StateManager : Singleton<StateManager>
     {
@@ -63,7 +63,7 @@ namespace StateManager
         public void GameWon()
         {
             MenuManager.Instance.OpenMenu();
-            AudioManager.Instance.PlayGameWon();
+            AudioManager.PlayGameWon();
         }
 
         public void RestartGame()

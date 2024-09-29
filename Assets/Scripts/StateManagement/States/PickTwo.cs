@@ -1,8 +1,8 @@
 using System;
-using StateManager.States.Base;
+using StateManagement.States.Base;
 using UnityEngine;
 
-namespace StateManager.States
+namespace StateManagement.States
 {
     public class PickTwo : State
     {

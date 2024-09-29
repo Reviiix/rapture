@@ -31,10 +31,7 @@ public class AudioManager : Singleton<AudioManager>
             AudioSources.Enqueue(Instantiate(audioSourcePrefab, transform).GetComponent<AudioSource>());
         }
     }
-
-    /// <summary>
-    /// Clear out any old Queue items that could be left over from scene change.
-    /// </summary>
+    
     private static void EmptyQueue()
     {
         var itemsInQueue = AudioSources.Count;
@@ -49,7 +46,7 @@ public class AudioManager : Singleton<AudioManager>
         var allButtons = FindObjectsOfType<Button>();
         foreach (var button in allButtons)
         {
-            //button.onClick.RemoveListener(PlayButtonClickSound); //Avoid any risk of duplicate sounds.
+            button.onClick.RemoveListener(PlayButtonClickSound); //Avoid any risk of duplicate sounds.
             button.onClick.AddListener(PlayButtonClickSound);
         }
     }
@@ -64,17 +61,17 @@ public class AudioManager : Singleton<AudioManager>
         PlayClip(Instance.buttonClick);
     }
     
-    public void PlaySuccess()
+    public static void PlaySuccess()
     {
         PlayClip(Instance.success);
     }
     
-    public void PlayFailure()
+    public static void PlayFailure()
     {
         PlayClip(Instance.failure);
     }
     
-    public void PlayGameWon()
+    public static void PlayGameWon()
     {
         PlayClip(Instance.win);
     }

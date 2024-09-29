@@ -1,6 +1,6 @@
 using System;
 
-namespace StateManager.States.Base
+namespace StateManagement.States.Base
 {
     public interface IState
     {

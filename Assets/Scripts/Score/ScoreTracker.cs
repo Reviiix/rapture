@@ -1,6 +1,7 @@
 using System;
 using pure_unity_methods;
-using StateManager.States;
+using StateManagement;
+using StateManagement.States;
 
 namespace Score
 {
@@ -36,7 +37,7 @@ namespace Score
 
             if (Evaluator.Instance.IsWon())
             {
-                StateManager.StateManager.Instance.GameWon();
+                StateManager.Instance.GameWon();
             }
         }
 
