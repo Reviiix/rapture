@@ -18,7 +18,9 @@ public class GridManager : Singleton<GridManager>
     [SerializeField] [Range(2, 10)] public int amountOfItemsPerRow;
     private readonly List<GridItem> gridItems = new ();
     private GameObject grid;
-    public static Action<GridItem> OnCardClick;
+    public static Action<GridItem> OnItemClick;
+    public GridItem selectionOne;
+    public GridItem selectionTwo;
 
     public IEnumerator Initialise(Action completeCallback)
     {
@@ -33,8 +35,36 @@ public class GridManager : Singleton<GridManager>
             completeCallback?.Invoke();
         }));
     }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        Evaluation.OnEvaluationComplete += OnEvaluationComplete;
+    }
     
-    #if UNITY_EDITOR
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        Evaluation.OnEvaluationComplete -= OnEvaluationComplete;
+    }
+
+    private void OnEvaluationComplete(bool match)
+    {
+        if (match)
+        {
+            StartCoroutine(selectionOne.RemoveFromPlay());
+            StartCoroutine(selectionTwo.RemoveFromPlay());
+        }
+        else
+        {
+            AudioManager.Instance.PlayFailure();
+            StartCoroutine(selectionOne.ResetCard(false));
+            StartCoroutine(selectionTwo.ResetCard(false));
+        }
+    }
+    
+
+#if UNITY_EDITOR
     private void OnValidate()
     {
         //generatingGrid = false; //debug tool
@@ -106,7 +136,7 @@ public class GridManager : Singleton<GridManager>
     {
         foreach (var item in gridItems)
         {
-            item.ResetCard();
+            StartCoroutine(item.ResetCard());
         }
         gridItems.Clear();
     }
@@ -137,7 +167,6 @@ public class GridManager : Singleton<GridManager>
         }
         var secondHalf = new List<Card>(firstHalf);
         var fullList = firstHalf.Concat(secondHalf).ToList();
-        //TODO: Shuffle fullList
         return fullList;
     }
     
@@ -147,10 +176,24 @@ public class GridManager : Singleton<GridManager>
         return DeckOfCards.Instance.TakeRandomCard();
     }
 
-    private static void OnGridItemClick(GridItem gridItem)
+    private void OnGridItemClick(GridItem gridItem)
     {
-        Debug.Log($"{gridItem.Value.GetRank()} of {gridItem.Value.GetSuit()} revealed({gridItem.Revealed})"); //Debug tool
-        OnCardClick?.Invoke(gridItem);
+        //Debug.Log($"{gridItem.Value.GetRank()} of {gridItem.Value.GetSuit()} revealed({gridItem.Revealed})"); //Debug tool
+        SetSelections(gridItem);
+        OnItemClick?.Invoke(gridItem);
+        StateManager.Instance.ProgressState();
+    }
+
+    private void SetSelections(GridItem gridItem)
+    {
+        if (StateManager.Instance.IsPickOne())
+        {
+            selectionOne = gridItem;
+        }
+        if (StateManager.Instance.IsPickTwo())
+        {
+            selectionTwo = gridItem;
+        }
     }
 }
 

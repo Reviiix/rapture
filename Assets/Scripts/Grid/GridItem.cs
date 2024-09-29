@@ -1,16 +1,22 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
 [RequireComponent(typeof(Button))]
+[RequireComponent(typeof(Animator))]
+
 public class GridItem : MonoBehaviour
 {
     private bool Initialised { get; set; }
-    public bool Revealed { get; private set; }
+    private bool Active { get; set; }
+    private bool Revealed { get; set; }
     private Image display;
+    private Animator animator;
     private Action<GridItem> onClick;
     public Card Value { get; private set; }
+    private static readonly WaitForSeconds TimeBeforeReset = new (1);
 
     public void Initialise(Action<GridItem> gridManagerOnClick)
     {
@@ -22,12 +28,14 @@ public class GridItem : MonoBehaviour
         AssignFields();
         SubscribeToEvents(gridManagerOnClick);
         Initialised = true;
+        Active = true;
     }
 
     private void AssignFields()
     {
         GetComponent<Button>().onClick.AddListener(OnClick); //Secured by the require component attribute.
         display = GetComponent<Image>();
+        animator = GetComponent<Animator>();
     }
     
     private void SubscribeToEvents(Action<GridItem> gridManagerOnClick)
@@ -39,8 +47,16 @@ public class GridItem : MonoBehaviour
     {
         if (onClick != null)
         {
-            onClick -= GridManager.OnCardClick;
+            onClick -= GridManager.OnItemClick;
         }
+    }
+    
+    private void OnClick()
+    {
+        if (Revealed) return;
+        if (!Active) return;
+        Reveal();
+        onClick(this);
     }
 
     public void SetValue(Card value)
@@ -48,41 +64,41 @@ public class GridItem : MonoBehaviour
         if (!Initialised)
         {
             Debug.LogError($"{nameof(GridItem)} has not been initialised.");
+            return;
         }
         Value = value;
-        //display.sprite = value.GetCardSprite(); //Debug tool
-    }
-
-    private void OnClick()
-    {
-        Revealed = !Revealed;
-        if (Revealed)
-        {
-            Reveal();
-            AudioManager.Instance.PlaySuccess();
-        }
-        else
-        {
-            Hide();
-            AudioManager.Instance.PlayFailure();
-        }
-        onClick(this);
     }
 
     private void Reveal()
     {
-        var v = Value.GetCardSprite();
-        display.sprite = v;
+        Revealed = !Revealed;
+        SetCardSprite(Value.GetCardSprite());
     }
 
-    private void Hide()
+    private void SetCardSprite(Sprite s)
     {
-        display.sprite = DeckOfCards.Instance.cardBack;
+        display.sprite = s;
     }
 
-    public void ResetCard()
+    public IEnumerator RemoveFromPlay(bool instant = true)
     {
+        Active = false;
+        if (!instant)
+        {
+            yield return TimeBeforeReset;
+        }
+        animator.enabled = true;
+        AudioManager.Instance.PlaySuccess();
+    }
+    
+    public IEnumerator ResetCard(bool instant = true)
+    {
+        if (!instant)
+        {
+            yield return TimeBeforeReset;
+        }
         Revealed = false;
+        Active = true;
         display.sprite = DeckOfCards.Instance.cardBack;
     }
 }

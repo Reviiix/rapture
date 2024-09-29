@@ -7,6 +7,8 @@ public class ProjectInitializer : MonoBehaviour
 {
     private void Start()
     {
+        MenuManager.Instance.Initialise();
+        StateManager.Instance.Initialise();
         DeckOfCards.Instance.Initialise();
         StartCoroutine(GridManager.Instance.Initialise(() =>
         {
