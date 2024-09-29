@@ -1,18 +1,21 @@
+using PureFunctions.UnitySpecific;
 using UnityEngine;
 
 /// <summary>
-/// Using a project initializer can help reduce race conditions by allowing for more granular control of your load sequence.
+/// Using a project initializer can help reduce race conditions by allowing for more granular control of the load sequence.
 /// </summary>
-public class ProjectInitializer : MonoBehaviour
+public class ProjectInitializer : Singleton<ProjectInitializer>
 {
     private void Start()
     {
-        MenuManager.Instance.Initialise();
         StateManager.Instance.Initialise();
+        MenuManager.Instance.Initialise();
         DeckOfCards.Instance.Initialise();
+        ScoreTracker.Instance.Initialise();
         StartCoroutine(GridManager.Instance.Initialise(() =>
         {
-            AudioManager.Instance.Initialise();
+            AudioManager.Instance.Initialise(); //dependent on GridManager
+            Evaluator.Instance.Initialise();
         }));
     }
 }
