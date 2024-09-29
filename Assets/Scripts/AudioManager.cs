@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PureFunctions.UnitySpecific;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +13,7 @@ public class AudioManager : Singleton<AudioManager>
     [SerializeField] private AudioClip buttonClick;
     [SerializeField] private AudioClip success;
     [SerializeField] private AudioClip failure;
+    [SerializeField] private AudioClip win;
 
     public void Initialise()
     {
@@ -25,9 +25,22 @@ public class AudioManager : Singleton<AudioManager>
     private void ResolveDependencies()
     {
         _backGroundAudioSource = GetComponent<AudioSource>(); //Secured by the require component attribute.
+        EmptyQueue();
         for (var i = 0; i < maximumAudioSources; i++)
         {
             AudioSources.Enqueue(Instantiate(audioSourcePrefab, transform).GetComponent<AudioSource>());
+        }
+    }
+
+    /// <summary>
+    /// Clear out any old Queue items that could be left over from scene change.
+    /// </summary>
+    private static void EmptyQueue()
+    {
+        var itemsInQueue = AudioSources.Count;
+        for (var i = 0; i < itemsInQueue; i++)
+        {
+            AudioSources.Dequeue();
         }
     }
 
@@ -61,8 +74,14 @@ public class AudioManager : Singleton<AudioManager>
         PlayClip(Instance.failure);
     }
     
-    protected static void PlayClip(AudioClip clip)
+    public void PlayGameWon()
     {
+        PlayClip(Instance.win);
+    }
+    
+    private static void PlayClip(AudioClip clip)
+    {
+        if (!Instance) return;
         var audioSource = ReturnFirstUnusedAudioSource();
         audioSource.clip = clip;
         audioSource.Play();
@@ -73,11 +92,5 @@ public class AudioManager : Singleton<AudioManager>
         var audioSource = AudioSources.Dequeue();
         AudioSources.Enqueue(audioSource);
         return audioSource;
-    }
-
-
-    public static void SetGlobalVolumeForPause(float volume)
-    {
-        AudioListener.volume = volume;
     }
 }
