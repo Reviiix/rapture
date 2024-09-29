@@ -62,7 +62,7 @@ namespace StateManagement
     
         public void GameWon()
         {
-            MenuManager.Instance.OpenMenu();
+            Menu.Instance.OpenMenu();
             Audio.PlayGameWon();
         }
 
@@ -73,7 +73,7 @@ namespace StateManagement
     
         public bool IsMenuState()
         {
-            return activeState is Menu;
+            return activeState is States.Menu;
         }
 
         public bool IsPickOne()

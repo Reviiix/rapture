@@ -24,7 +24,7 @@ namespace Grid
         [SerializeField] [Range(1, 4)] public int amountOfRows = 3; //Setting range to preserve readability of cards.
         [SerializeField] [Range(2, 8)] public int amountOfItemsPerRow = 6;
         private readonly List<GridItem> gridItems = new ();
-        private GameObject grid;
+        private GameObject gridObject;
         private GridItem selectionOne;
         private GridItem selectionTwo;
 
@@ -36,7 +36,7 @@ namespace Grid
             ResetGrid(()=>CreateGrid(() =>
             {
                 SetGridItemValues();
-                grid = GameObject.FindWithTag(GridTag);
+                gridObject = GameObject.FindWithTag(GridTag);
                 generatingGrid = false;
                 completeCallback?.Invoke();
             }));
@@ -89,10 +89,10 @@ namespace Grid
 
         private void CreateGrid(Action completeCallback = null)
         {
-            grid = Instantiate(gridPrefab, gridArea);
+            gridObject = Instantiate(gridPrefab, gridArea);
             for (var i = 0; i < amountOfRows; i++)
             {
-                var row = Instantiate(rowPrefab, grid.transform).GetComponent<GridRow>();
+                var row = Instantiate(rowPrefab, gridObject.transform).GetComponent<GridRow>();
                 for (var j = 0; j < amountOfItemsPerRow; j++)
                 {
                     if (Application.isPlaying)
@@ -118,22 +118,22 @@ namespace Grid
         private void ResetGrid(Action completeCallback = null)
         {
             ResetGridItems();
-            grid = GameObject.FindWithTag(GridTag);
-            if (!grid)
+            gridObject = GameObject.FindWithTag(GridTag);
+            if (!gridObject)
             {
                 completeCallback?.Invoke();
                 return;
             }
             if (Application.isPlaying)
             {
-                Destroy(grid);
+                Destroy(gridObject);
                 completeCallback?.Invoke();
             }
             else
             {
                 UnityEditor.EditorApplication.delayCall+=()=>
                 {
-                    DestroyImmediate(grid);
+                    DestroyImmediate(gridObject);
                     completeCallback?.Invoke();
                 };
             }

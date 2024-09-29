@@ -3,9 +3,9 @@ using StateManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuManager : Singleton<MenuManager>
+public class Menu : Singleton<Menu>
 {
-    [SerializeField] private Canvas menu;
+    [SerializeField] private Canvas display;
     [SerializeField] private Button menuButton;
     [SerializeField] private Button playButton;
     [SerializeField] private Button restartButton;
@@ -22,7 +22,7 @@ public class MenuManager : Singleton<MenuManager>
         var currentState = StateManager.Instance.IsMenuState();
         StateManager.Instance.SetMenuState(!currentState, () =>
         {
-            menu.enabled = !currentState;
+            display.enabled = !currentState;
         });
     }
 

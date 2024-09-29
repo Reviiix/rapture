@@ -12,7 +12,7 @@ public class ProjectInitializer : Singleton<ProjectInitializer>
     private void Start()
     {
         StateManager.Instance.Initialise();
-        MenuManager.Instance.Initialise();
+        Menu.Instance.Initialise();
         DeckOfCards.Instance.Initialise();
         Score.Score.Instance.Initialise();
         StartCoroutine(Grid.Grid.Instance.Initialise(() =>
