@@ -1,11 +1,14 @@
 # rapture
-
 Made with Unity 2021.3.44f1 by Leon Michael Higgin on 27/10/2024 && 29/10/2024.
+
+GitHub Repository: https://github.com/Reviiix/rapture
+GitHub Sub Module: https://github.com/Reviiix/pure-unity-methods
+
+The app uses my own sub repository, 'unity-pure-functions'. You will need to initiate the sub module before opening the project. https://github.com/Reviiix/pure-unity-methods
 
 A basic match game where the aim is to match 2 cards by choosing them concurrently from a selection of card.
 The game is intended to be played with an aspect ratio of 16:9. It will dynamically scale to devices but this is the target ratio.
 I chose to use playing cards as the matching objects as I feel like this has more potential to be scaled.
-I use my own sub repo called ‘unity-pure-functions’ which I keep updated with common unity functionality. This speeds up my development process by allowing me easy access to code I have already wrote before. Not all functionality in this sub module will be used but including it in no way affects performance.
 
 ProjectInitialiser:
 Controls the order of execution of the other classes to avoid the possibility of race conditions.
